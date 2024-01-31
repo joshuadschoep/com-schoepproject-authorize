@@ -10,7 +10,7 @@
         "strict": true,
         "module": "ES2015",
         "moduleResolution": "node",
-        "noEmit": true
+        "noEmit": false
     },
     "include": ["src"],
     "ts-node": {

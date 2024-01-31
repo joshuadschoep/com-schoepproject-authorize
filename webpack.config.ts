@@ -1,6 +1,7 @@
 import path from "path";
 import TerserPlugin from "terser-webpack-plugin";
 import { Configuration } from "webpack";
+import ZipPlugin from "zip-webpack-plugin";
 
 const config: Configuration = {
     entry: path.join(__dirname, "/src/index.ts"),
@@ -24,6 +25,11 @@ const config: Configuration = {
             },
         ],
     },
+    plugins: [
+        new ZipPlugin({
+            filename: "build.zip"
+        })
+    ],
     optimization: {
         minimize: true,
         minimizer: [
