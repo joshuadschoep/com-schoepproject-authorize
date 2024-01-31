@@ -30,7 +30,7 @@ const config: Configuration = {
     },
     plugins: [
         new ZipPlugin({
-            include: "build/index.js",
+            include: "index.js",
             filename: "build.zip",
         }),
     ],
