@@ -10,9 +10,9 @@
         "strict": true,
         "module": "ES2015",
         "moduleResolution": "node",
-        "noEmit": false
+        "noEmit": true
     },
-    "include": ["src"],
+    "include": ["src", "webpack.config.ts"],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

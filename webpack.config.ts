@@ -10,12 +10,15 @@ const config: Configuration = {
         path: path.resolve(__dirname, "build"),
         filename: "index.js",
         libraryTarget: "commonjs",
+        clean: true,
     },
     target: "node",
     resolve: {
         extensions: [".js", ".ts"],
     },
-    externals: ["aws-sdk"],
+    externals: {
+        "@aws-sdk/client-secrets-manager": "@aws-sdk/client-secrets-manager",
+    },
     module: {
         rules: [
             {
@@ -27,8 +30,9 @@ const config: Configuration = {
     },
     plugins: [
         new ZipPlugin({
-            filename: "build.zip"
-        })
+            include: "build/index.js",
+            filename: "build.zip",
+        }),
     ],
     optimization: {
         minimize: true,
