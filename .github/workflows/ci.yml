@@ -40,5 +40,5 @@ jobs:
                   name: build
                   path: build
             - name: Upload to Lambda
-              run: bash ./.github/scripts/lambda.sh
+              run: bash ../.github/scripts/lambda.sh
               working-directory: build
