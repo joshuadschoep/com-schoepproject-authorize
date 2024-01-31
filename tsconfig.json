@@ -1,21 +1,21 @@
 {
+  "compilerOptions": {
+    "outDir": "./build",
+    "baseUrl": "./src",
+    "target": "ESNext",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "noEmit": true
+  },
+  "include": ["src", "test", "webpack.config.ts"],
+  "ts-node": {
     "compilerOptions": {
-        "outDir": "./build",
-        "baseUrl": "./src",
-        "target": "ESNext",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "strict": true,
-        "module": "ES2015",
-        "moduleResolution": "node",
-        "noEmit": true
-    },
-    "include": ["src", "webpack.config.ts"],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
+      "module": "CommonJS"
     }
+  }
 }

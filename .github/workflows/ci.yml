@@ -1,46 +1,49 @@
 name: "Integration"
-on: push
+on: [push, pull_request]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20.x"
-                  cache: "npm"
-            - name: Install Modules
-              run: npm install
-            - name: Build Package
-              run: npm run build
-            - name: Archive prod artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                  name: build
-                  path: build
-    deploy:
-        runs-on: ubuntu-latest
-        needs: build
-        permissions:
-            id-token: write
-            contents: read
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-            - name: "Configure Deployment Credentials"
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                  role-to-assume: arn:aws:iam::145724753995:role/com-schoepproject-authorize-cd
-                  role-session-name: Github-Actions-Deploy-Lambda
-                  aws-region: us-east-1
-            - name: Download build
-              uses: actions/download-artifact@v4
-              with:
-                  name: build
-                  path: build
-            - name: Upload to Lambda
-              run: bash ../.github/scripts/lambda.sh
-              working-directory: build
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Install Modules
+        run: npm install
+      - name: Run ESLint
+        run: npm run lint:check
+      - name: Run Prettier
+        run: npm run prettify:check
+      - name: Run Typescript Compiler
+        run: npm run types:check
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Install Modules
+        run: npm install
+      - name: Build Package
+        run: npm run build
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Install Modules
+        run: npm install
+      - name: Run Tests
+        run: npm run test
