@@ -31,7 +31,7 @@ jobs:
             - name: "Configure Deployment Credentials"
               uses: aws-actions/configure-aws-credentials@v3
               with:
-                  role-to-assume: arn:aws:iam::145724753995:role/com-schoepproject-authorize-cd,
+                  role-to-assume: arn:aws:iam::145724753995:role/com-schoepproject-authorize-cd
                   role-session-name: Github-Actions-Deploy-Lambda
                   aws-region: us-east-1
             - name: Download build
