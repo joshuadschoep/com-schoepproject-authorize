@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "PRODUCTION") {
+  require("dotenv").config();
+}
 import { create401Error } from "./helpers";
 import { validateToken } from "./oidc-access-token";
 import {
@@ -32,12 +35,14 @@ export const handler = async (
       });
     } else if (event.OAuthAccessToken) {
       callback(null, {
+        Authorized: true,
         SignedCookie: generateSignedCookieFromAccessToken(
-          validateToken(event.OAuthAccessToken)
+          await validateToken(event.OAuthAccessToken)
         ),
       });
+    } else {
+      callback(null, create401Error("No authentication methods received"));
     }
-    callback(null, create401Error("No authentication methods received"));
   } catch (e: any) {
     switch (e.name) {
       case "JsonWebTokenError":
@@ -46,8 +51,11 @@ export const handler = async (
       case "TokenExpiredError":
         callback(null, create401Error("Cookie is expired"));
         break;
+      case "JWSSignatureVerificationFailed":
+        callback(null, create401Error("Access Token verification failed"));
+        break;
       default:
-        console.dir(e);
+        console.dir(e.stack);
         callback(null, create401Error(`Unknown issue: ${e}`));
         break;
     }

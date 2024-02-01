@@ -1,10 +1,16 @@
-import { JWTPayload } from "express-oauth2-jwt-bearer";
 import Cookie from "cookie";
-import { type Secret, type VerifyOptions, verify, sign } from "jsonwebtoken";
+import {
+  type Secret,
+  type VerifyOptions,
+  verify,
+  sign,
+  Algorithm,
+} from "jsonwebtoken";
 import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from "@aws-sdk/client-secrets-manager";
+import { JWTPayload } from "jose";
 
 export interface KeyPairSecret {
   PUBLIC_KEY: string;
@@ -19,11 +25,11 @@ async function fetchKeysFromSecretsManager() {
     return;
   }
   const client = new SecretsManagerClient({
-    apiVersion: "2017-10-17",
-    region: "us-east-1",
+    apiVersion: process.env.SECRETS_MANAGER_API_VERSION,
+    region: process.env.SECRETS_MANAGER_REGION,
   });
   const secret = await client.send(
-    new GetSecretValueCommand({ SecretId: "DevAccessKeyPair" })
+    new GetSecretValueCommand({ SecretId: process.env.SECRETS_MANAGER_SECRET })
   );
   const value: KeyPairSecret = JSON.parse(secret.SecretString ?? "");
   PUBLIC_KEY = value.PUBLIC_KEY.trim();
@@ -32,7 +38,7 @@ async function fetchKeysFromSecretsManager() {
 
 export const validateSignedCookie = async (cookie: any) => {
   await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY, {
-    algorithms: ["RS256"],
+    algorithms: [process.env.COOKIE_ALGORITHM as Algorithm],
   });
   return true;
 };
@@ -56,12 +62,12 @@ export const generateSignedCookieFromAccessToken = (
   payload?: JWTPayload
 ): any => {
   return Cookie.serialize(
-    "TOKEN",
+    process.env.COOKIE_NAME ?? "TOKEN",
     sign({}, PRIVATE_KEY, {
       audience: payload?.aud,
       subject: payload?.sub,
       expiresIn: 3000,
-      algorithm: "RS256",
+      algorithm: process.env.COOKIE_ALGORITHM as Algorithm,
     }),
     {
       path: "/",

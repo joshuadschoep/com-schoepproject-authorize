@@ -1,32 +1,32 @@
-const { auth } = require("express-oauth2-jwt-bearer");
-import { JWTPayload, requiredScopes } from "express-oauth2-jwt-bearer";
+import * as jose from "jose";
+import { Algorithm } from "jsonwebtoken";
 
-const jwtCheck = auth({
-  audience: "https://authorize.schoepproject.com",
-  issuerBaseURL: "https://schoep.us.auth0.com/",
-  tokenSigningAlg: "RS256",
-});
+export class JWTScopeValidationFailed extends Error {
+  constructor(name: string, message: string) {
+    super(message);
+    this.name = name;
+  }
+}
 
-const validateAndGetTokenPayload = (
-  accessToken: any
-): JWTPayload | undefined => {
-  // this is the hackiest thing I've ever written, why does everyone
-  // write their oauth2 verifier as express middleware
-  let req = {
-    query: {
-      access_token: accessToken,
-    },
-  } as any;
-  jwtCheck(req, {}, () => {});
-  return req?.auth?.payload;
+export const validateToken = async (accessToken: any) => {
+  const JWKS = jose.createRemoteJWKSet(
+    new URL(`${process.env.OAUTH_ISSUER}.well-known/jwks.json`)
+  );
+
+  const { payload } = await jose.jwtVerify(accessToken, JWKS, {
+    issuer: process.env.OAUTH_ISSUER ?? "unclaimable_issuer",
+    audience: process.env.OAUTH_AUDIENCE ?? "unclaimable_audience",
+    algorithms: [process.env.OAUTH_ALGORITHM as Algorithm],
+  });
+
+  if (
+    payload.scope === (process.env.OAUTH_REQUIRED_CLAIM ?? "unclaimable:scope")
+  ) {
+    return payload;
+  } else {
+    throw new JWTScopeValidationFailed(
+      "JWTScopeValidationFailed",
+      "Does not contain required scope"
+    );
+  }
 };
-
-const validateRequiredPayloadScopes = (
-  payload?: JWTPayload
-): JWTPayload | undefined => {
-  requiredScopes("read:dev")(payload);
-  return payload;
-};
-
-export const validateToken = (accessToken: any): JWTPayload | undefined =>
-  validateRequiredPayloadScopes(validateAndGetTokenPayload(accessToken));

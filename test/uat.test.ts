@@ -1,18 +1,22 @@
 import "./secretmock";
-import { AuthorizationResult, handler } from "../src/index";
-import Cookie from "cookie";
-import { sign } from "jsonwebtoken";
 import { FAKE_KEY, SECRET_DATA } from "./secretmock";
+import { getOAuthToken } from "./getOAuthToken";
+import {
+  callHandlerWithAccessToken,
+  callHandlerWithCookie,
+  generateExpiredCookie,
+  generateSignedCookie,
+} from "./helpers";
 
 describe("Authorization Lambda", () => {
   describe("Authorization With Cookies", () => {
     it("should handle a valid cookie", async () => {
-      const asdf = jest.fn();
+      const callback = jest.fn();
       await callHandlerWithCookie(
         generateSignedCookie(SECRET_DATA.PRIVATE_KEY.trim()),
-        asdf
+        callback
       );
-      expect(asdf).toHaveBeenCalledWith(null, {
+      expect(callback).toHaveBeenCalledWith(null, {
         Authorized: true,
       });
     });
@@ -45,36 +49,33 @@ describe("Authorization Lambda", () => {
       });
     });
   });
+
+  describe("Authorization with Access Tokens", () => {
+    let accessToken: string;
+    let invalidAccessToken: string;
+    beforeAll(async () => {
+      accessToken = await getOAuthToken();
+      invalidAccessToken = accessToken.concat("arbitrary===");
+    });
+
+    it("should handle a valid access token", async () => {
+      const callback = jest.fn();
+      await callHandlerWithAccessToken(accessToken, callback);
+      expect(callback).toHaveBeenCalledWith(null, {
+        Authorized: true,
+        SignedCookie: expect.stringContaining("TOKEN="),
+      });
+    });
+
+    it("should handle an invalid access token", async () => {
+      const callback = jest.fn();
+      await callHandlerWithAccessToken(invalidAccessToken, callback);
+      expect(callback).toHaveBeenCalledWith(null, {
+        Authorized: false,
+        Error: expect.objectContaining({
+          Code: 401,
+        }),
+      });
+    });
+  });
 });
-
-const generateSignedCookie = (key: string) =>
-  Cookie.serialize(
-    "TOKEN",
-    sign({}, key, {
-      audience: "https://localhost:5000/",
-      subject: "user@example.com",
-      expiresIn: 3000,
-      algorithm: "RS256",
-    })
-  );
-
-const generateExpiredCookie = (key: string) =>
-  Cookie.serialize(
-    "TOKEN",
-    sign({}, key, {
-      audience: "https://localhost:5000/",
-      subject: "user@example.com",
-      expiresIn: 0,
-      algorithm: "RS256",
-    })
-  );
-
-const callHandlerWithCookie = async (cookie: string, cb: Function) => {
-  await handler(
-    {
-      SignedCookie: cookie,
-    },
-    {},
-    cb
-  );
-};
