@@ -1,7 +1,7 @@
 name: "Integration"
 on: [push, pull_request]
 
-jobs:
+jobs: 
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +21,16 @@ jobs:
         run: npm run types:check
   build:
     runs-on: ubuntu-latest
+    env:
+      SECRETS_MANAGER_SECRET: ${{ secrets.TEST_SECRETS_MANAGER_SECRET }}
+      OAUTH_ISSUER: ${{ secrets.TEST_OAUTH_ISSUER }}
+      OAUTH_AUDIENCE: ${{ secrets.TEST_OAUTH_AUDIENCE }}
+      OAUTH_REQUIRED_CLAIM: ${{ secrets.TEST_OAUTH_REQUIRED_CLAIM }}
+      SECRETS_MANAGER_API_VERSION: ${{ secrets.SECRETS_MANAGER_API_VERSION }}
+      SECRETS_MANAGER_REGION: ${{ secrets.SECRETS_MANAGER_REGION }}
+      COOKIE_ALGORITHM: ${{ secrets.COOKIE_ALGORITHM }}
+      COOKIE_NAME: ${{ secrets.COOKIE_NAME }}
+      OAUTH_ALGORITHM: ${{ secrets.OAUTH_ALGORITHM }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -35,6 +45,23 @@ jobs:
         run: npm run build
   test:
     runs-on: ubuntu-latest
+    env:
+      SECRETS_MANAGER_SECRET: ${{ secrets.TEST_SECRETS_MANAGER_SECRET }}
+      OAUTH_ISSUER: ${{ secrets.TEST_OAUTH_ISSUER }}
+      OAUTH_AUDIENCE: ${{ secrets.TEST_OAUTH_AUDIENCE }}
+      OAUTH_REQUIRED_CLAIM: ${{ secrets.TEST_OAUTH_REQUIRED_CLAIM }}
+      OIDC_URL: ${{ secrets.TEST_OIDC_URL }}
+      OIDC_CLIENT_ID: ${{ secrets.TEST_OIDC_CLIENT_ID }}
+      OIDC_CLIENT_SECRET: ${{ secrets.TEST_OIDC_CLIENT_SECRET }}
+      OIDC_GRANT_TYPE: ${{ secrets.TEST_OIDC_GRANT_TYPE }}
+      TESTING_PRIVATE_KEY: ${{ secrets.TEST_PRIVATE_KEY }}
+      TESTING_PUBLIC_KEY: ${{ secrets.TEST_PUBLIC_KEY }}
+      TESTING_INVALID_PRIVATE_KEY: ${{ secrets.TEST_INVALID_PRIVATE_KEY }}
+      SECRETS_MANAGER_API_VERSION: ${{ secrets.SECRETS_MANAGER_API_VERSION }}
+      SECRETS_MANAGER_REGION: ${{ secrets.SECRETS_MANAGER_REGION }}
+      COOKIE_ALGORITHM: ${{ secrets.COOKIE_ALGORITHM }}
+      COOKIE_NAME: ${{ secrets.COOKIE_NAME }}
+      OAUTH_ALGORITHM: ${{ secrets.OAUTH_ALGORITHM }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

@@ -1,1 +1,0 @@
-aws lambda update-function-code --function-name=arn:aws:lambda:us-east-1:145724753995:function:authorizeSchoepprojectDevelopmentUsers --zip-file=fileb://build.zip 
