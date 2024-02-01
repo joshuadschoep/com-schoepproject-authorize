@@ -36,6 +36,8 @@ jobs:
       OAUTH_AUDIENCE: ${{ secrets.PROD_OAUTH_AUDIENCE }}
       OAUTH_ALGORITHM: ${{ secrets.OAUTH_ALGORITHM }}
       OAUTH_REQUIRED_CLAIM: ${{ secrets.PROD_OAUTH_REQUIRED_CLAIM }}
+      AWS_FUNCTION_ARN: ${{ secrets.AWS_FUNCTION_ARN }}
+      BUILD_ZIP_FILE: ${{ secrets.BUILD_ZIP_FILE }}
     permissions:
       id-token: write
       contents: read
