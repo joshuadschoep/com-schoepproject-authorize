@@ -10,7 +10,8 @@
     "strict": true,
     "module": "ES2015",
     "moduleResolution": "node",
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": ["src", "test", "webpack.config.ts"],
   "ts-node": {
