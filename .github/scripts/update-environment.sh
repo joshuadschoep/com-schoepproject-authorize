@@ -13,4 +13,4 @@ aws lambda update-function-configuration --function-name=$AWS_FUNCTION_ARN --env
     OAUTH_AUDIENCE=$PROD_OAUTH_AUDIENCE,\
     OAUTH_ALGORITHM=$OAUTH_ALGORITHM,\
     OAUTH_REQUIRED_CLAIM=$PROD_OAUTH_REQUIRED_CLAIM,\
-}"
+}" --aws-delay 10000 ---aws-retry 30
