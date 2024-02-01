@@ -1,8 +1,3 @@
-echo $SECRETS_MANAGER_API_VERSION
-echo $COOKIE_NAME
-echo $SECRETS_MANAGER_SECRET
-echo $PROD_SECRETS_MANAGER_SECRET
-
 aws lambda update-function-configuration --function-name=$AWS_FUNCTION_ARN --environment="Variables={\
     SECRETS_MANAGER_API_VERSION=$SECRETS_MANAGER_API_VERSION,\
     SECRETS_MANAGER_REGION=$SECRETS_MANAGER_REGION,\
@@ -13,4 +8,4 @@ aws lambda update-function-configuration --function-name=$AWS_FUNCTION_ARN --env
     OAUTH_AUDIENCE=$PROD_OAUTH_AUDIENCE,\
     OAUTH_ALGORITHM=$OAUTH_ALGORITHM,\
     OAUTH_REQUIRED_CLAIM=$PROD_OAUTH_REQUIRED_CLAIM,\
-}" --aws-delay 10000 ---aws-retry 30
+}"

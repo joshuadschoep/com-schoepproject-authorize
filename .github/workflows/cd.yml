@@ -52,7 +52,9 @@ jobs:
           role-to-assume: arn:aws:iam::145724753995:role/com-schoepproject-authorize-cd
           role-session-name: Github-Actions-Deploy-Lambda
           aws-region: us-east-1
-      - name: Download build
+      - name: Upload Environment
+        run: bash ./.github/scripts/update-environment.sh
+      - name: Download Build
         uses: actions/download-artifact@v4
         with:
           name: build
@@ -60,5 +62,3 @@ jobs:
       - name: Upload to Lambda
         run: bash ../.github/scripts/upload-code.sh
         working-directory: build
-      - name: Upload Environment
-        run: bash ./.github/scripts/update-environment.sh
