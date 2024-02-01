@@ -1,12 +1,13 @@
-import { readFileSync } from "fs";
 import { KeyPairSecret } from "signed-cookie";
 
-export const SECRET_DATA: KeyPairSecret = {
-  PUBLIC_KEY: readFileSync("test/keys/key.pub").toString(),
-  PRIVATE_KEY: readFileSync("test/keys/key.pem").toString(),
-};
+export const PUBLIC_KEY = process.env.TESTING_PUBLIC_KEY ?? "";
+export const PRIVATE_KEY = process.env.TESTING_PRIVATE_KEY ?? "";
+export const FAKE_KEY = process.env.TESTING_INVALID_PRIVATE_KEY ?? "";
 
-export const FAKE_KEY = readFileSync("test/keys/fake.pem").toString();
+export const SECRET_DATA: KeyPairSecret = {
+  PUBLIC_KEY,
+  PRIVATE_KEY
+};
 
 const mockResponse = JSON.stringify(SECRET_DATA);
 

@@ -1,5 +1,6 @@
+import 'dotenv/config';
 import "./secretmock";
-import { FAKE_KEY, SECRET_DATA } from "./secretmock";
+import { FAKE_KEY, PRIVATE_KEY } from "./secretmock";
 import { getOAuthToken } from "./getOAuthToken";
 import {
   callHandlerWithAccessToken,
@@ -13,7 +14,7 @@ describe("Authorization Lambda", () => {
     it("should handle a valid cookie", async () => {
       const callback = jest.fn();
       await callHandlerWithCookie(
-        generateSignedCookie(SECRET_DATA.PRIVATE_KEY.trim()),
+        generateSignedCookie(PRIVATE_KEY.trim()),
         callback
       );
       expect(callback).toHaveBeenCalledWith(null, {
@@ -38,7 +39,7 @@ describe("Authorization Lambda", () => {
     it("should reject an expired cookie", async () => {
       const callback = jest.fn();
       await callHandlerWithCookie(
-        generateExpiredCookie(SECRET_DATA.PRIVATE_KEY.trim()),
+        generateExpiredCookie(PRIVATE_KEY.trim()),
         callback
       );
       expect(callback).toHaveBeenCalledWith(null, {

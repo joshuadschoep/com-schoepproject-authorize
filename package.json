@@ -1,16 +1,18 @@
 {
-  "name": "base-typescript-lib",
+  "name": "com-schoepproject-authorize",
   "version": "1.0.0",
-  "description": "Basic Typescript template for Node based applications that should not be run in browser",
+  "description": "Verify OAuth2 access tokens against an OAuth provider, and then verifies that they have a specific scope.",
   "main": "src/index.ts",
   "scripts": {
-    "run": "ts-node src/index.ts",
     "build": "webpack --config webpack.config.ts",
+    "lint:check": "eslint --max-warnings=0",    
+    "prettify:check": "prettier \"./src/**/*.{js,jsx,mjs,ts,tsx,css,scss,sass}\" --check",
+    "types:check": "tsc",
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshuadschoep/base-typescript-lib.git"
+    "url": "git+https://github.com/joshuadschoep/com-schoepproject-authorize.git"
   },
   "keywords": [
     "typescript",
@@ -20,9 +22,9 @@
   "author": "Joshua Schoep",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joshuadschoep/base-typescript-lib/issues"
+    "url": "https://github.com/joshuadschoep/com-schoepproject-authorize/issues"
   },
-  "homepage": "https://github.com/joshuadschoep/base-typescript-lib#readme",
+  "homepage": "https://github.com/joshuadschoep/com-schoepproject-authorize#readme",
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.503.1",
     "cookie": "^0.6.0",
