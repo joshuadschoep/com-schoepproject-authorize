@@ -54,5 +54,7 @@ jobs:
           name: build
           path: build
       - name: Upload to Lambda
-        run: bash ../.github/scripts/lambda.sh
+        run: bash ../.github/scripts/upload-code.sh
         working-directory: build
+      - name: Upload Environment
+        run: ./.github/scripts/update-environment.sh
