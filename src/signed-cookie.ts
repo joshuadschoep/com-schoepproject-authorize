@@ -11,6 +11,7 @@ import {
   SecretsManagerClient,
 } from "@aws-sdk/client-secrets-manager";
 import { JWTPayload } from "jose";
+import { KeyObject, createPrivateKey, createPublicKey } from "crypto";
 
 export interface KeyPairSecret {
   PUBLIC_KEY: string;
@@ -18,8 +19,8 @@ export interface KeyPairSecret {
 }
 
 // at global scope so we can cache between near runs, saving time
-var PUBLIC_KEY: string;
-var PRIVATE_KEY: string;
+var PUBLIC_KEY: KeyObject;
+var PRIVATE_KEY: KeyObject;
 async function fetchKeysFromSecretsManager() {
   if (PUBLIC_KEY && PRIVATE_KEY) {
     return;
@@ -32,12 +33,12 @@ async function fetchKeysFromSecretsManager() {
     new GetSecretValueCommand({ SecretId: process.env.SECRETS_MANAGER_SECRET })
   );
   const value: KeyPairSecret = JSON.parse(secret.SecretString ?? "");
-  PUBLIC_KEY = value.PUBLIC_KEY.trim();
-  PRIVATE_KEY = value.PRIVATE_KEY.trim();
+  PUBLIC_KEY = createPublicKey(value.PUBLIC_KEY.trim());
+  PRIVATE_KEY = createPrivateKey(value.PRIVATE_KEY.trim());
 }
 
 export const validateSignedCookie = async (cookie: any) => {
-  await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY.trim(), {
+  await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY, {
     algorithms: [process.env.COOKIE_ALGORITHM as Algorithm],
   });
   return true;
@@ -64,7 +65,7 @@ export const generateSignedCookieFromAccessToken = (
   console.log("Returning signed cookie for future authorization");
   return Cookie.serialize(
     process.env.COOKIE_NAME ?? "TOKEN",
-    sign({}, PRIVATE_KEY.trim(), {
+    sign({}, PRIVATE_KEY, {
       audience: payload?.aud,
       subject: payload?.sub,
       expiresIn: 3000,
