@@ -37,7 +37,7 @@ async function fetchKeysFromSecretsManager() {
 }
 
 export const validateSignedCookie = async (cookie: any) => {
-  await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY, {
+  await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY.trim(), {
     algorithms: [process.env.COOKIE_ALGORITHM as Algorithm],
   });
   return true;
@@ -61,9 +61,10 @@ const verifyJwt = async (
 export const generateSignedCookieFromAccessToken = (
   payload?: JWTPayload
 ): any => {
+  console.log("Returning signed cookie for future authorization");
   return Cookie.serialize(
     process.env.COOKIE_NAME ?? "TOKEN",
-    sign({}, PRIVATE_KEY, {
+    sign({}, PRIVATE_KEY.trim(), {
       audience: payload?.aud,
       subject: payload?.sub,
       expiresIn: 3000,
@@ -71,6 +72,7 @@ export const generateSignedCookieFromAccessToken = (
     }),
     {
       path: "/",
+      httpOnly: true,
       maxAge: 3000,
     }
   );
