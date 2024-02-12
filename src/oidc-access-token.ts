@@ -9,7 +9,7 @@ export class JWTScopeValidationFailed extends Error {
 }
 
 interface JWTScope {
-  scope: string
+  scope: string;
 }
 
 export const validateToken = async (accessToken: any) => {
@@ -24,7 +24,9 @@ export const validateToken = async (accessToken: any) => {
   });
 
   if (
-    payload.scope.includes(process.env.OAUTH_REQUIRED_CLAIM ?? "unclaimable:scope")
+    payload.scope.includes(
+      process.env.OAUTH_REQUIRED_CLAIM ?? "unclaimable:scope"
+    )
   ) {
     return payload;
   } else {
