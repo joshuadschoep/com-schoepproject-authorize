@@ -8,4 +8,4 @@ aws lambda update-function-configuration --function-name=$AWS_FUNCTION_ARN --env
     OAUTH_AUDIENCE=$OAUTH_AUDIENCE,\
     OAUTH_ALGORITHM=$OAUTH_ALGORITHM,\
     OAUTH_REQUIRED_CLAIM=$OAUTH_REQUIRED_CLAIM,\
-}"
+}" > /dev/null

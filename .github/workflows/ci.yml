@@ -1,9 +1,7 @@
 name: "Integration"
-on: 
-  - pull_request
-  - push
+on: workflow_call
 
-jobs: 
+jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -21,7 +19,7 @@ jobs:
         run: npm run prettify:check
       - name: Run Typescript Compiler
         run: npm run types:check
-  build:
+  build-dev:
     runs-on: ubuntu-latest
     env:
       SECRETS_MANAGER_SECRET: ${{ secrets.TEST_SECRETS_MANAGER_SECRET }}

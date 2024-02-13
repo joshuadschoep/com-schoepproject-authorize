@@ -33,15 +33,16 @@ async function fetchKeysFromSecretsManager() {
     new GetSecretValueCommand({ SecretId: process.env.SECRETS_MANAGER_SECRET })
   );
   const value: KeyPairSecret = JSON.parse(secret.SecretString ?? "");
-  console.log(value.PRIVATE_KEY);
   PUBLIC_KEY = createPublicKey(value.PUBLIC_KEY);
   PRIVATE_KEY = createPrivateKey(value.PRIVATE_KEY);
 }
 
 export const validateSignedCookie = async (cookie: any) => {
+  console.log("Verifying signed cookie");
   await verifyJwt(Cookie.parse(cookie).TOKEN, PUBLIC_KEY, {
     algorithms: [process.env.COOKIE_ALGORITHM as Algorithm],
   });
+  console.log("Cookie is valid");
   return true;
 };
 

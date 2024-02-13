@@ -1,0 +1,16 @@
+name: "Main Branch Test & Deploy"
+on:
+  push:
+    branches: main
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+  cd:
+    needs: ci
+    uses: ./.github/workflows/cd.yml
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
